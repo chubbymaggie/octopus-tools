@@ -4,7 +4,7 @@ import argparse
 
 from octopus.server.plugin_executor import PluginExecutor
 
-parser = argparse.ArgumentParser(description="Generic plugin executor.")
+parser = argparse.ArgumentParser(description="Generic CSV Importer")
 
 parser.add_argument(
     "-s", "--server-host",
@@ -19,11 +19,13 @@ parser.add_argument(
     help="set the port number of the octopus server")
 
 parser.add_argument(
-    "configuration",
-    type=argparse.FileType("r"),
-    help="use this configuration file")
+    "project",
+    type=str,
+    help="The project to import into.")
 
 args = parser.parse_args()
 
 executor = PluginExecutor(args.server_host, args.server_port)
-print(executor.post(args.configuration))
+
+settings = { 'projectName' : args.project}
+executor.execute("", "octopus.plugins.csvimporter.CSVImporterPlugin", settings)
